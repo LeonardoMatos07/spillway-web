@@ -8,6 +8,8 @@ import {
   MAP_LAYERS,
   parseStatesMapParams,
   rankStates,
+  storageClass,
+  storageClassLabel,
   stepMonth,
   summarizeStates,
 } from "./maps";
@@ -89,5 +91,18 @@ describe("access", () => {
   it("keeps /mapas open and lets the states layer decide on its own (account invitation)", () => {
     expect(isProtected("/mapas")).toBe(false);
     expect(MAP_LAYERS.find((l) => l.key === "estados")?.account).toBe(true);
+  });
+});
+
+describe("storage classes", () => {
+  it("splits the EAR at 20, 40, 60 and 80 and keeps missing values apart", () => {
+    expect(storageClass(5)).toBe(0);
+    expect(storageClass(20)).toBe(1);
+    expect(storageClass(79.9)).toBe(3);
+    expect(storageClass(120)).toBe(4);
+    expect(storageClass(-5)).toBe(0);
+    expect(storageClass(null)).toBeNull();
+    expect(storageClassLabel(0)).toBe("menos de 20%");
+    expect(storageClassLabel(4)).toBe("80% ou mais");
   });
 });

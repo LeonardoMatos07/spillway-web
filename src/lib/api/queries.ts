@@ -34,6 +34,7 @@ import type {
   ReportListResponse,
   Source,
   GeoStatesResponse,
+  ReservoirCollection,
   StateCurtailmentResponse,
   Subsystem,
   SubsystemCurtailmentResponse,
@@ -99,6 +100,10 @@ export function getGeoStatesCurtailment(source: AggregateSource = "total", month
   return apiTry<GeoStatesResponse>(withQuery("/v1/geo/states/curtailment", { source, month }), {
     tags: ["curtailment"],
   });
+}
+
+export function getGeoReservoirs(options: { date?: string; subsystem?: string } = {}) {
+  return apiTry<ReservoirCollection>(withQuery("/v1/geo/reservoirs", options), SYSTEM_OPTIONS);
 }
 
 export interface PlantFilters {
