@@ -24,6 +24,7 @@ export function SortableTable<T>({
   initialSort,
   selectedKey,
   onSelectRow,
+  pageSize = 100,
 }: {
   rows: T[];
   columns: Column<T>[];
@@ -32,8 +33,11 @@ export function SortableTable<T>({
   initialSort?: { key: string; desc: boolean };
   selectedKey?: string | null;
   onSelectRow?: (key: string) => void;
+  /** Rows shown at first; a button shows more. */
+  pageSize?: number;
 }) {
   const [sort, setSort] = useState(initialSort ?? null);
+  const [shown, setShown] = useState(pageSize);
   const sorted = useMemo(() => {
     const column = columns.find((c) => c.key === sort?.key);
     const read = column?.sortValue;
@@ -91,7 +95,7 @@ export function SortableTable<T>({
           </tr>
         </thead>
         <tbody>
-          {sorted.map((row) => {
+          {sorted.slice(0, shown).map((row) => {
             const key = rowKey(row);
             return (
               <tr
@@ -121,6 +125,17 @@ export function SortableTable<T>({
           })}
         </tbody>
       </table>
+      {sorted.length > shown ? (
+        <div className="border-grid border-t p-3 text-center text-sm">
+          <button
+            type="button"
+            className="text-accent underline"
+            onClick={() => setShown((n) => n + pageSize)}
+          >
+            Mostrar mais ({sorted.length - shown} restantes)
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

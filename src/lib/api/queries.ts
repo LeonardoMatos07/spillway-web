@@ -34,6 +34,8 @@ import type {
   ReportListResponse,
   Source,
   GeoStatesResponse,
+  LineCollection,
+  SubstationCollection,
   ReservoirCollection,
   StateCurtailmentResponse,
   Subsystem,
@@ -104,6 +106,14 @@ export function getGeoStatesCurtailment(source: AggregateSource = "total", month
 
 export function getGeoReservoirs(options: { date?: string; subsystem?: string } = {}) {
   return apiTry<ReservoirCollection>(withQuery("/v1/geo/reservoirs", options), SYSTEM_OPTIONS);
+}
+
+export function getGeoSubstations(options: { voltage_min?: number; state?: string } = {}) {
+  return apiTry<SubstationCollection>(withQuery("/v1/geo/substations", options), SYSTEM_OPTIONS);
+}
+
+export function getGeoLines(options: { voltage_min?: number; state?: string } = {}) {
+  return apiTry<LineCollection>(withQuery("/v1/geo/lines", options), SYSTEM_OPTIONS);
 }
 
 export interface PlantFilters {

@@ -37,6 +37,8 @@ export interface PointsMapProps {
   /** Names of CSS custom properties, one per class (limits.length + 1). */
   colorVars: string[];
   lines?: LinesCollection;
+  /** Color the lines with the same classes and property as the points (e.g. voltage). */
+  colorLines?: boolean;
   selected: string | null;
   onSelect: (id: string | null) => void;
 }
@@ -221,7 +223,13 @@ export default function PointsMap(props: PointsMapProps) {
       );
       map.setPaintProperty("points", "circle-stroke-color", css("--color-ink"));
       map.setPaintProperty("points-selected", "circle-stroke-color", css("--color-focus"));
-      map.setPaintProperty("lines", "line-color", css("--color-ink-2"));
+      map.setPaintProperty(
+        "lines",
+        "line-color",
+        p.colorLines
+          ? colorExpression(p.colorProperty, p.colorLimits, colors, noData)
+          : css("--color-ink-2"),
+      );
     };
     paint();
     const observer = new MutationObserver(paint);
