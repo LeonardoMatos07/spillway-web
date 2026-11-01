@@ -17,6 +17,12 @@ export const MAP_LAYERS = [
     label: "Reservatórios",
     account: false,
   },
+  {
+    key: "rede",
+    href: "/mapas/rede",
+    label: "Rede",
+    account: false,
+  },
 ] as const;
 
 export type MapLayerKey = (typeof MAP_LAYERS)[number]["key"];
@@ -158,4 +164,31 @@ export function storageClassLabel(index: number): string {
   const last = STORAGE_LIMITS.length;
   if (index === last) return `${STORAGE_LIMITS[last - 1]}% ou mais`;
   return `${STORAGE_LIMITS[index - 1]}% a menos de ${STORAGE_LIMITS[index]}%`;
+}
+
+/** Transmission voltage classes (kV): upper limits of the first four, in the map-color order. */
+export const VOLTAGE_LIMITS = [100, 200, 300, 480];
+export const VOLTAGE_LABELS = ["69 a 88 kV", "138 kV", "230 kV", "345 a 440 kV", "500 kV ou mais"];
+/** Minimum-voltage choices of the grid map; the default shows the high voltages only. */
+export const VOLTAGE_MIN_OPTIONS = [
+  { value: 500, label: "500 kV ou mais" },
+  { value: 345, label: "345 kV ou mais" },
+  { value: 230, label: "230 kV ou mais" },
+  { value: 138, label: "138 kV ou mais" },
+  { value: 0, label: "Todas as tensões" },
+] as const;
+export const DEFAULT_VOLTAGE_MIN = 230;
+
+export function voltageClass(kv: number | null): number | null {
+  if (kv === null || !Number.isFinite(kv)) return null;
+  const index = VOLTAGE_LIMITS.findIndex((limit) => kv < limit);
+  return index === -1 ? VOLTAGE_LIMITS.length : index;
+}
+
+export function parseVoltageMin(value: string | string[] | null | undefined): number {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const parsed = Number(raw);
+  return VOLTAGE_MIN_OPTIONS.some((o) => o.value === parsed) && raw !== undefined && raw !== null
+    ? parsed
+    : DEFAULT_VOLTAGE_MIN;
 }

@@ -198,6 +198,57 @@ export interface ReservoirCollection {
   features: ReservoirFeature[];
 }
 
+export interface GeoLine {
+  type: "LineString";
+  coordinates: [number, number][];
+}
+
+export interface SubstationProperties {
+  station_id: string;
+  substation_id: string | null;
+  name: string | null;
+  voltage_kv: number | null;
+  subsystem: string | null;
+  state: string | null;
+  main_agent: string | null;
+}
+
+export interface SubstationFeature {
+  type: "Feature";
+  geometry: GeoPoint;
+  properties: SubstationProperties;
+}
+
+export interface SubstationCollection {
+  type: "FeatureCollection";
+  meta: GeoMeta;
+  features: SubstationFeature[];
+}
+
+export interface LineProperties {
+  equipment_code: string;
+  name: string | null;
+  voltage_kv: number | null;
+  length_km: number | null;
+  from_substation: string | null;
+  to_substation: string | null;
+  from_state: string | null;
+  to_state: string | null;
+  geometry_kind: "schematic";
+}
+
+export interface LineFeature {
+  type: "Feature";
+  geometry: GeoLine;
+  properties: LineProperties;
+}
+
+export interface LineCollection {
+  type: "FeatureCollection";
+  meta: GeoMeta;
+  features: LineFeature[];
+}
+
 export interface PlantListResponse {
   items: PlantSummary[];
   total: number;

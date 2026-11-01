@@ -7,7 +7,9 @@ import {
   classLimits,
   MAP_LAYERS,
   parseStatesMapParams,
+  parseVoltageMin,
   rankStates,
+  voltageClass,
   storageClass,
   storageClassLabel,
   stepMonth,
@@ -104,5 +106,26 @@ describe("storage classes", () => {
     expect(storageClass(null)).toBeNull();
     expect(storageClassLabel(0)).toBe("menos de 20%");
     expect(storageClassLabel(4)).toBe("80% ou mais");
+  });
+});
+
+describe("voltage classes", () => {
+  it("groups the voltages of the register in five classes", () => {
+    expect(voltageClass(69)).toBe(0);
+    expect(voltageClass(88)).toBe(0);
+    expect(voltageClass(138)).toBe(1);
+    expect(voltageClass(230)).toBe(2);
+    expect(voltageClass(440)).toBe(3);
+    expect(voltageClass(500)).toBe(4);
+    expect(voltageClass(800)).toBe(4);
+    expect(voltageClass(null)).toBeNull();
+  });
+
+  it("takes only the offered minimum voltages and defaults to the high ones", () => {
+    expect(parseVoltageMin("0")).toBe(0);
+    expect(parseVoltageMin("500")).toBe(500);
+    expect(parseVoltageMin("77")).toBe(230);
+    expect(parseVoltageMin(null)).toBe(230);
+    expect(parseVoltageMin("x")).toBe(230);
   });
 });

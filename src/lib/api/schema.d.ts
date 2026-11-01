@@ -607,6 +607,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/geo/substations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo_substations_v1_geo_substations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/geo/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo_lines_v1_geo_lines_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/market/pld": {
         parameters: {
             query?: never;
@@ -1351,6 +1383,13 @@ export interface components {
             step: string;
             count: number;
         };
+        GeoLine: {
+            type: "LineString";
+            coordinates: [
+                number,
+                number
+            ][];
+        };
         GeoMeta: {
             source_name: string;
             source_url: string;
@@ -1476,6 +1515,27 @@ export interface components {
         LeadListResponse: {
             items: components["schemas"]["Lead"][];
             total: number;
+        };
+        LineCollection: {
+            type: "FeatureCollection";
+            meta: components["schemas"]["GeoMeta"];
+            features: components["schemas"]["LineFeature"][];
+        };
+        LineFeature: {
+            type: "Feature";
+            geometry: components["schemas"]["GeoLine"];
+            properties: components["schemas"]["LineProperties"];
+        };
+        LineProperties: {
+            equipment_code: string;
+            name: string | null;
+            voltage_kv: number | null;
+            length_km: number | null;
+            from_substation: string | null;
+            to_substation: string | null;
+            from_state: string | null;
+            to_state: string | null;
+            geometry_kind: "schematic";
         };
         LoadRun: {
             id: number;
@@ -2023,6 +2083,16 @@ export interface components {
             ranking: components["schemas"]["RankedPlant"][];
             ranking_month: string | null;
         };
+        SubstationCollection: {
+            type: "FeatureCollection";
+            meta: components["schemas"]["GeoMeta"];
+            features: components["schemas"]["SubstationFeature"][];
+        };
+        SubstationFeature: {
+            type: "Feature";
+            geometry: components["schemas"]["GeoPoint"];
+            properties: components["schemas"]["SubstationProperties"];
+        };
         SubstationItem: {
             valid_from: string;
             valid_to: string | null;
@@ -2043,6 +2113,15 @@ export interface components {
             page: number;
             page_size: number;
             items: components["schemas"]["SubstationItem"][];
+        };
+        SubstationProperties: {
+            station_id: string;
+            substation_id: string | null;
+            name: string | null;
+            voltage_kv: number | null;
+            subsystem: string | null;
+            state: string | null;
+            main_agent: string | null;
         };
         SubsystemCurtailment: {
             source: "wind" | "solar" | "total";
@@ -3352,6 +3431,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReservoirCollection"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geo_substations_v1_geo_substations_get: {
+        parameters: {
+            query?: {
+                voltage_min?: number | null;
+                state?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubstationCollection"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geo_lines_v1_geo_lines_get: {
+        parameters: {
+            query?: {
+                voltage_min?: number | null;
+                state?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LineCollection"];
                 };
             };
             422: {
