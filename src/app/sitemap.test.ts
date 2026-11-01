@@ -39,6 +39,8 @@ describe("sitemap", () => {
         "/painel",
         "/sistema",
         "/agua",
+        "/mapas/reservatorios",
+        "/mapas/rede",
         "/metodologia",
         "/cadastro",
         "/previsoes",
@@ -53,6 +55,9 @@ describe("sitemap", () => {
       ].map((path) => `${BASE}${path}`),
     );
     expect(urls).not.toContain(`${BASE}/noticias/8`);
+    // the states layer needs an account (and a redirecting /mapas has nothing to index)
+    expect(urls).not.toContain(`${BASE}/mapas/estados`);
+    expect(urls).not.toContain(`${BASE}/mapas`);
   });
 
   it("never lists a page that needs an account", async () => {

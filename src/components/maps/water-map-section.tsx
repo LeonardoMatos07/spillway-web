@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import type { ReservoirCollection } from "@/lib/api/types";
 
@@ -91,6 +92,11 @@ function WaterMap() {
   return (
     <div className="mt-6 pb-12">
       <ReservoirsMapPanel initial={data} />
+      <p className="mt-3 text-sm">
+        <Link className="text-accent underline" href="/mapas/reservatorios">
+          Abrir em Mapas
+        </Link>
+      </p>
     </div>
   );
 }

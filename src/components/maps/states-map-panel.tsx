@@ -49,9 +49,12 @@ function useReducedMotion(): boolean {
 export function StatesMapPanel({
   initial,
   initialMetric,
+  compact = false,
 }: {
   initial: GeoStatesResponse;
   initialMetric: StateMetric;
+  /** Embedded in /estados: the map and legend only (the page lists the states itself). */
+  compact?: boolean;
 }) {
   const [data, setData] = useState(initial);
   const [metric, setMetric] = useState<StateMetric>(initialMetric);
@@ -248,22 +251,24 @@ export function StatesMapPanel({
             ))}
           </select>
         </label>
-        <div className="flex flex-col gap-1 text-sm">
-          <button
-            type="button"
-            onClick={togglePlay}
-            disabled={reducedMotion || meta.months.length < 2}
-            className="bg-accent text-on-accent min-h-10 rounded-lg px-4 font-medium disabled:opacity-50"
-            aria-pressed={playing}
-          >
-            {playing ? "Pausar" : "Reproduzir meses"}
-          </button>
-          {reducedMotion ? (
-            <span className="text-muted text-xs">
-              Reprodução desativada: seu sistema pede menos movimento. Use as setas do mês.
-            </span>
-          ) : null}
-        </div>
+        {compact ? null : (
+          <div className="flex flex-col gap-1 text-sm">
+            <button
+              type="button"
+              onClick={togglePlay}
+              disabled={reducedMotion || meta.months.length < 2}
+              className="bg-accent text-on-accent min-h-10 rounded-lg px-4 font-medium disabled:opacity-50"
+              aria-pressed={playing}
+            >
+              {playing ? "Pausar" : "Reproduzir meses"}
+            </button>
+            {reducedMotion ? (
+              <span className="text-muted text-xs">
+                Reprodução desativada: seu sistema pede menos movimento. Use as setas do mês.
+              </span>
+            ) : null}
+          </div>
+        )}
       </form>
 
       <p role="status" aria-live="polite" className="sr-only">
@@ -328,119 +333,136 @@ export function StatesMapPanel({
             </p>
           </section>
 
-          <section
-            aria-label="Estado em destaque"
-            className="border-grid bg-surface rounded-2xl border p-4"
-          >
-            <h2 className="text-ink text-sm font-semibold">Estado em destaque</h2>
-            {hovered ? (
-              <dl className="mt-2 space-y-1 text-sm">
-                <dt className="text-ink font-semibold">{hovered.name}</dt>
-                <dd>
-                  % de corte: {STATE_METRICS.pct.short(hovered.item)}
-                  <br />
-                  Energia cortada: {formatEnergy(hovered.item.curtailed_mwh)}
-                  <br />
-                  Perda estimada: {STATE_METRICS.brl.short(hovered.item)}
-                  <br />
-                  Usinas afetadas: {hovered.item.affected_plants}
-                </dd>
-                <dd>
-                  <Link
-                    className="text-accent underline"
-                    href={`/estados/${hovered.state.toLowerCase()}`}
-                  >
-                    Ver {hovered.name}
-                  </Link>
-                </dd>
-              </dl>
-            ) : (
-              <p className="text-muted mt-2 text-sm">
-                Passe o mouse, toque ou use Tab sobre um estado. Clicar abre a página dele.
-              </p>
-            )}
-          </section>
+          {compact ? null : (
+            <section
+              aria-label="Estado em destaque"
+              className="border-grid bg-surface rounded-2xl border p-4"
+            >
+              <h2 className="text-ink text-sm font-semibold">Estado em destaque</h2>
+              {hovered ? (
+                <dl className="mt-2 space-y-1 text-sm">
+                  <dt className="text-ink font-semibold">{hovered.name}</dt>
+                  <dd>
+                    % de corte: {STATE_METRICS.pct.short(hovered.item)}
+                    <br />
+                    Energia cortada: {formatEnergy(hovered.item.curtailed_mwh)}
+                    <br />
+                    Perda estimada: {STATE_METRICS.brl.short(hovered.item)}
+                    <br />
+                    Usinas afetadas: {hovered.item.affected_plants}
+                  </dd>
+                  <dd>
+                    <Link
+                      className="text-accent underline"
+                      href={`/estados/${hovered.state.toLowerCase()}`}
+                    >
+                      Ver {hovered.name}
+                    </Link>
+                  </dd>
+                </dl>
+              ) : (
+                <p className="text-muted mt-2 text-sm">
+                  Passe o mouse, toque ou use Tab sobre um estado. Clicar abre a página dele.
+                </p>
+              )}
+            </section>
+          )}
         </div>
       </div>
 
       <p className="text-ink-2 mt-5 text-sm leading-6">{summary}</p>
 
-      <section className="mt-6" aria-labelledby="states-table-title">
-        <h2 id="states-table-title" className="text-ink text-lg font-semibold">
-          Tabela dos valores
-        </h2>
-        <div className="border-grid bg-surface shadow-card mt-3 rounded-2xl border">
-          <table className="tabular w-full text-left text-sm">
-            <caption className="sr-only">
-              Curtailment por estado em {monthLabel} ({sourceLabel}). Ordene pelos cabeçalhos.
-            </caption>
-            <thead>
-              <tr className="border-grid bg-surface-2 text-ink-2 border-b text-xs tracking-wide uppercase">
-                {(
-                  [
-                    ["name", "Estado", "", "left"],
-                    ["pct", "% de corte", "", "right"],
-                    ["mwh", "Energia cortada", "hidden sm:table-cell", "right"],
-                    ["brl", "Perda estimada", "", "right"],
-                    ["plants", "Usinas", "hidden sm:table-cell", "right"],
-                  ] as const
-                ).map(([key, label, hide, align]) => (
-                  <th
-                    key={key}
-                    scope="col"
-                    aria-sort={sort.key === key ? (sort.desc ? "descending" : "ascending") : "none"}
-                    className={`px-3 py-2 font-medium ${hide} ${align === "right" ? "text-right" : ""}`}
-                  >
-                    <button
-                      type="button"
-                      className="hover:text-ink uppercase"
-                      onClick={() =>
-                        setSort((s) => ({ key, desc: s.key === key ? !s.desc : key !== "name" }))
+      {compact ? null : (
+        <section className="mt-6" aria-labelledby="states-table-title">
+          <h2 id="states-table-title" className="text-ink text-lg font-semibold">
+            Tabela dos valores
+          </h2>
+          <div className="border-grid bg-surface shadow-card mt-3 rounded-2xl border">
+            <table className="tabular w-full text-left text-sm">
+              <caption className="sr-only">
+                Curtailment por estado em {monthLabel} ({sourceLabel}). Ordene pelos cabeçalhos.
+              </caption>
+              <thead>
+                <tr className="border-grid bg-surface-2 text-ink-2 border-b text-xs tracking-wide uppercase">
+                  {(
+                    [
+                      ["name", "Estado", "", "left"],
+                      ["pct", "% de corte", "", "right"],
+                      ["mwh", "Energia cortada", "hidden sm:table-cell", "right"],
+                      ["brl", "Perda estimada", "", "right"],
+                      ["plants", "Usinas", "hidden sm:table-cell", "right"],
+                    ] as const
+                  ).map(([key, label, hide, align]) => (
+                    <th
+                      key={key}
+                      scope="col"
+                      aria-sort={
+                        sort.key === key ? (sort.desc ? "descending" : "ascending") : "none"
                       }
+                      className={`px-3 py-2 font-medium ${hide} ${align === "right" ? "text-right" : ""}`}
                     >
-                      {label}
-                      <span aria-hidden>{sort.key === key ? (sort.desc ? " ↓" : " ↑") : ""}</span>
-                    </button>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.state} className="border-grid hover:bg-surface-2 border-b last:border-0">
-                  <th scope="row" className="px-3 py-2 font-normal">
-                    <Link
-                      className="text-ink hover:text-accent font-medium hover:underline"
-                      href={`/estados/${r.state.toLowerCase()}`}
-                    >
-                      {r.name}
-                    </Link>
-                  </th>
-                  <td className="px-3 py-2 text-right">{STATE_METRICS.pct.short(r.item)}</td>
-                  <td className="hidden px-3 py-2 text-right sm:table-cell">
-                    {formatEnergy(r.item.curtailed_mwh)}
-                  </td>
-                  <td className="px-3 py-2 text-right">{STATE_METRICS.brl.short(r.item)}</td>
-                  <td className="hidden px-3 py-2 text-right sm:table-cell">
-                    {r.item.affected_plants}
-                  </td>
+                      <button
+                        type="button"
+                        className="hover:text-ink uppercase"
+                        onClick={() =>
+                          setSort((s) => ({ key, desc: s.key === key ? !s.desc : key !== "name" }))
+                        }
+                      >
+                        {label}
+                        <span aria-hidden>{sort.key === key ? (sort.desc ? " ↓" : " ↑") : ""}</span>
+                      </button>
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {missing.length > 0 ? (
-          <p className="text-muted mt-2 text-xs">
-            Sem dados neste mês e fonte ({meta.omitted}): {missing.join(", ")}.
-          </p>
-        ) : null}
-      </section>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr
+                    key={r.state}
+                    className="border-grid hover:bg-surface-2 border-b last:border-0"
+                  >
+                    <th scope="row" className="px-3 py-2 font-normal">
+                      <Link
+                        className="text-ink hover:text-accent font-medium hover:underline"
+                        href={`/estados/${r.state.toLowerCase()}`}
+                      >
+                        {r.name}
+                      </Link>
+                    </th>
+                    <td className="px-3 py-2 text-right">{STATE_METRICS.pct.short(r.item)}</td>
+                    <td className="hidden px-3 py-2 text-right sm:table-cell">
+                      {formatEnergy(r.item.curtailed_mwh)}
+                    </td>
+                    <td className="px-3 py-2 text-right">{STATE_METRICS.brl.short(r.item)}</td>
+                    <td className="hidden px-3 py-2 text-right sm:table-cell">
+                      {r.item.affected_plants}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {missing.length > 0 ? (
+            <p className="text-muted mt-2 text-xs">
+              Sem dados neste mês e fonte ({meta.omitted}): {missing.join(", ")}.
+            </p>
+          ) : null}
+        </section>
+      )}
 
       <ul className="text-muted mt-4 list-disc space-y-1 pl-5 text-xs">
         {meta.warnings.map((w) => (
           <li key={w}>{w}</li>
         ))}
       </ul>
+      {compact ? (
+        <p className="mt-3 text-sm">
+          <Link className="text-accent underline" href="/mapas/estados">
+            Abrir em Mapas
+          </Link>{" "}
+          (com a tabela, a reprodução mês a mês e outros indicadores)
+        </p>
+      ) : null}
       <MapAttribution dataset="restrição de operação de usinas eólicas e solares" />
     </div>
   );
