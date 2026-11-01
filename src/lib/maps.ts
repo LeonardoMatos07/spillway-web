@@ -23,6 +23,13 @@ export const MAP_LAYERS = [
     label: "Rede",
     account: false,
   },
+  {
+    key: "usinas",
+    href: "/mapas/usinas",
+    label: "Usinas",
+    /** Needs an account, like /usinas (same data). */
+    account: true,
+  },
 ] as const;
 
 export type MapLayerKey = (typeof MAP_LAYERS)[number]["key"];
@@ -191,4 +198,45 @@ export function parseVoltageMin(value: string | string[] | null | undefined): nu
   return VOLTAGE_MIN_OPTIONS.some((o) => o.value === parsed) && raw !== undefined && raw !== null
     ? parsed
     : DEFAULT_VOLTAGE_MIN;
+}
+
+/** Curtailment (% of the energy a plant would have generated): upper limits of the first four classes. */
+export const CURTAILMENT_LIMITS = [5, 15, 30, 50];
+export const CURTAILMENT_LABELS = [
+  "menos de 5%",
+  "5% a menos de 15%",
+  "15% a menos de 30%",
+  "30% a menos de 50%",
+  "50% ou mais",
+];
+
+export interface Placed {
+  id: string;
+  lon: number;
+  lat: number;
+}
+
+/**
+ * Plants that connect to the same substation share one coordinate. For drawing only, they are
+ * spread on a small spiral around it (about 3 km per ring), so none hides another. The table and
+ * the detail keep saying that the position is the substation's.
+ */
+export function spreadCoincident(points: Placed[], step = 0.03): Map<string, [number, number]> {
+  const groups = new Map<string, Placed[]>();
+  for (const p of points) {
+    const key = `${p.lon.toFixed(5)},${p.lat.toFixed(5)}`;
+    const group = groups.get(key);
+    if (group) group.push(p);
+    else groups.set(key, [p]);
+  }
+  const out = new Map<string, [number, number]>();
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  for (const group of groups.values()) {
+    group.forEach((p, i) => {
+      if (group.length === 1) return out.set(p.id, [p.lon, p.lat]);
+      const radius = step * Math.sqrt(i + 0.5);
+      out.set(p.id, [p.lon + radius * Math.cos(i * golden), p.lat + radius * Math.sin(i * golden)]);
+    });
+  }
+  return out;
 }

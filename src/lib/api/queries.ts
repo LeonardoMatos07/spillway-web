@@ -35,6 +35,7 @@ import type {
   Source,
   GeoStatesResponse,
   LineCollection,
+  PlantGeoCollection,
   SubstationCollection,
   ReservoirCollection,
   StateCurtailmentResponse,
@@ -114,6 +115,14 @@ export function getGeoSubstations(options: { voltage_min?: number; state?: strin
 
 export function getGeoLines(options: { voltage_min?: number; state?: string } = {}) {
   return apiTry<LineCollection>(withQuery("/v1/geo/lines", options), SYSTEM_OPTIONS);
+}
+
+export function getGeoPlants(
+  options: { month?: string; source?: Source; state?: string; slug?: string } = {},
+) {
+  return apiTry<PlantGeoCollection>(withQuery("/v1/geo/plants", options), {
+    tags: ["curtailment", "plants"],
+  });
 }
 
 export interface PlantFilters {

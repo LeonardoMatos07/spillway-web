@@ -639,6 +639,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/geo/plants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo_plants_v1_geo_plants_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/market/pld": {
         parameters: {
             query?: never;
@@ -1757,6 +1773,33 @@ export interface components {
             plant: components["schemas"]["PowerPlantInfo"];
             points: components["schemas"]["PlantGenerationPoint"][];
         };
+        PlantGeoCollection: {
+            type: "FeatureCollection";
+            meta: components["schemas"]["GeoMeta"];
+            features: components["schemas"]["PlantGeoFeature"][];
+            unlocated: components["schemas"]["UnlocatedPlant"][];
+        };
+        PlantGeoFeature: {
+            type: "Feature";
+            geometry: components["schemas"]["GeoPoint"];
+            properties: components["schemas"]["PlantGeoProperties"];
+        };
+        PlantGeoProperties: {
+            id: string;
+            slug: string;
+            name: string;
+            source: "wind" | "solar";
+            state: string;
+            subsystem: string;
+            capacity_mw: number | null;
+            connection_point: string | null;
+            location_precision: "substation" | "official";
+            matched_on: string | null;
+            month: string | null;
+            curtailed_mwh: number | null;
+            curtailment_pct: number | null;
+            estimated_loss_brl: number | null;
+        };
         PlantListResponse: {
             items: components["schemas"]["PlantSummary"][];
             total: number;
@@ -2212,6 +2255,16 @@ export interface components {
             page: number;
             page_size: number;
             items: components["schemas"]["TransmissionLineItem"][];
+        };
+        UnlocatedPlant: {
+            id: string;
+            slug: string;
+            name: string;
+            source: "wind" | "solar";
+            state: string;
+            capacity_mw: number | null;
+            connection_point: string | null;
+            curtailed_mwh: number | null;
         };
         UnsubscribedResponse: {
             unsubscribed: boolean;
@@ -3491,6 +3544,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LineCollection"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geo_plants_v1_geo_plants_get: {
+        parameters: {
+            query?: {
+                month?: string | null;
+                source?: ("wind" | "solar") | null;
+                state?: string | null;
+                slug?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantGeoCollection"];
                 };
             };
             422: {

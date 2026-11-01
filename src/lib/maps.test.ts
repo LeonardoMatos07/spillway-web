@@ -9,6 +9,7 @@ import {
   parseStatesMapParams,
   parseVoltageMin,
   rankStates,
+  spreadCoincident,
   voltageClass,
   storageClass,
   storageClassLabel,
@@ -127,5 +128,23 @@ describe("voltage classes", () => {
     expect(parseVoltageMin("77")).toBe(230);
     expect(parseVoltageMin(null)).toBe(230);
     expect(parseVoltageMin("x")).toBe(230);
+  });
+});
+
+describe("spreadCoincident", () => {
+  it("keeps a lone point where it is and separates the ones that share a substation", () => {
+    const out = spreadCoincident([
+      { id: "a", lon: -40, lat: -10 },
+      { id: "b", lon: -41, lat: -11 },
+      { id: "c", lon: -41, lat: -11 },
+      { id: "d", lon: -41, lat: -11 },
+    ]);
+    expect(out.get("a")).toEqual([-40, -10]);
+    const spread = ["b", "c", "d"].map((id) => out.get(id)!.join(","));
+    expect(new Set(spread).size).toBe(3);
+    for (const id of ["b", "c", "d"]) {
+      const [lon, lat] = out.get(id)!;
+      expect(Math.hypot(lon! + 41, lat! + 11)).toBeLessThan(0.1);
+    }
   });
 });

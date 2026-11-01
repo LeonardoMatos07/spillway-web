@@ -37,6 +37,10 @@ export interface PointsMapProps {
   /** Names of CSS custom properties, one per class (limits.length + 1). */
   colorVars: string[];
   lines?: LinesCollection;
+  /** Points with this property equal to 1 get a thick ring (a precise position, not approximate). */
+  ringProperty?: string;
+  /** Start centered here instead of on the whole country (mini-map). */
+  focus?: { center: [number, number]; zoom: number };
   /** Color the lines with the same classes and property as the points (e.g. voltage). */
   colorLines?: boolean;
   selected: string | null;
@@ -86,8 +90,9 @@ export default function PointsMap(props: PointsMapProps) {
         sources: {},
         layers: [{ id: "background", type: "background", paint: { "background-color": "#fff" } }],
       },
-      bounds: BRAZIL_BOUNDS,
-      fitBoundsOptions: { padding: 8 },
+      ...(latest.current.focus
+        ? { center: latest.current.focus.center, zoom: latest.current.focus.zoom }
+        : { bounds: BRAZIL_BOUNDS, fitBoundsOptions: { padding: 8 } }),
       maxBounds: [
         [-90, -45],
         [-20, 15],
@@ -158,7 +163,9 @@ export default function PointsMap(props: PointsMapProps) {
             rMax,
           ],
           "circle-opacity": 0.9,
-          "circle-stroke-width": 1,
+          "circle-stroke-width": p.ringProperty
+            ? ["case", ["==", ["get", p.ringProperty], 1], 3, 1]
+            : 1,
         },
       });
       map.addLayer({
