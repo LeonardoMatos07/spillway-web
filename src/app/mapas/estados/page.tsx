@@ -1,6 +1,6 @@
-import Link from "next/link";
+import { AccountInvite } from "@/components/maps/account-invite";
 import { StatesMapPanel } from "@/components/maps/states-map-panel";
-import { Card, DataUnavailable, Notice, PageHeader } from "@/components/ui";
+import { DataUnavailable, Notice, PageHeader } from "@/components/ui";
 import { getGeoStatesCurtailment } from "@/lib/api/queries";
 import { parseStatesMapParams } from "@/lib/maps";
 import { getCurrentMember } from "@/lib/members";
@@ -25,36 +25,12 @@ export default async function StatesMapPage({
   const member = await getCurrentMember();
 
   if (!member) {
-    const next = `/mapas/estados${params.mes ? `?mes=${params.mes}` : ""}`;
     return (
-      <>
-        <PageHeader title="Curtailment por estado, no mapa">
-          <p>O mapa usa os mesmos dados da página Estados e é parte da área de contas gratuitas.</p>
-        </PageHeader>
-        <Card className="max-w-2xl p-6">
-          <h2 className="text-ink text-lg font-semibold">
-            Crie uma conta gratuita para ver o mapa
-          </h2>
-          <p className="text-ink-2 mt-2 text-sm leading-6">
-            Com a conta você vê o mapa do Brasil por mês, a tabela dos 27 estados e as páginas de
-            cada estado e usina. Leva um minuto e não custa nada.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link
-              href="/cadastro"
-              className="bg-accent text-on-accent inline-flex min-h-11 items-center rounded-lg px-5 font-medium"
-            >
-              Criar conta gratuita
-            </Link>
-            <Link
-              href={`/entrar?proximo=${encodeURIComponent(next)}`}
-              className="border-line hover:bg-surface-2 inline-flex min-h-11 items-center rounded-lg border px-5 font-medium"
-            >
-              Já tenho conta: entrar
-            </Link>
-          </div>
-        </Card>
-      </>
+      <AccountInvite
+        title="Curtailment por estado, no mapa"
+        what="o mapa do Brasil por mês, a tabela dos 27 estados e as páginas de cada estado e usina"
+        next={`/mapas/estados${params.mes ? `?mes=${params.mes}` : ""}`}
+      />
     );
   }
 

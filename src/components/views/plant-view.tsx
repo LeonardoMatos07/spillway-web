@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
+import { PlantLocationSection } from "@/components/maps/plant-location-section";
 import { MonthlyChart } from "@/components/charts/monthly-chart";
 import { GENERATION_COLORS, SERIES } from "@/components/charts/palette";
 import { CompareAction } from "@/components/compare-action";
@@ -300,6 +301,12 @@ export async function PlantView({
                   ]}
                 />
               </Section>
+
+              {isCluster ? null : (
+                <Suspense fallback={null}>
+                  <PlantLocationSection slug={plant.slug} />
+                </Suspense>
+              )}
 
               <Section
                 id="comparison"

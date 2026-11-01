@@ -249,6 +249,48 @@ export interface LineCollection {
   features: LineFeature[];
 }
 
+export interface PlantGeoProperties {
+  id: string;
+  slug: string;
+  name: string;
+  source: Source;
+  state: string;
+  subsystem: string;
+  capacity_mw: number | null;
+  connection_point: string | null;
+  /** "substation": approximate (the substation it connects to); "official": a regulator point. */
+  location_precision: "substation" | "official";
+  matched_on: string | null;
+  month: string | null;
+  curtailed_mwh: number | null;
+  curtailment_pct: number | null;
+  estimated_loss_brl: number | null;
+}
+
+export interface PlantGeoFeature {
+  type: "Feature";
+  geometry: GeoPoint;
+  properties: PlantGeoProperties;
+}
+
+export interface UnlocatedPlant {
+  id: string;
+  slug: string;
+  name: string;
+  source: Source;
+  state: string;
+  capacity_mw: number | null;
+  connection_point: string | null;
+  curtailed_mwh: number | null;
+}
+
+export interface PlantGeoCollection {
+  type: "FeatureCollection";
+  meta: GeoMeta;
+  features: PlantGeoFeature[];
+  unlocated: UnlocatedPlant[];
+}
+
 export interface PlantListResponse {
   items: PlantSummary[];
   total: number;
