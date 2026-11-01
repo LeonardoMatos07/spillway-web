@@ -156,6 +156,48 @@ export interface GeoStatesResponse {
   items: GeoStateCurtailment[];
 }
 
+/** Envelope of the GeoJSON map layers (`/v1/geo/*`). */
+export interface GeoMeta {
+  source_name: string;
+  source_url: string;
+  license: string;
+  as_of: string | null;
+  updated_at: Timestamp | null;
+  warnings: string[];
+  total: number;
+  omitted: number;
+}
+
+export interface GeoPoint {
+  type: "Point";
+  coordinates: [number, number];
+}
+
+export interface ReservoirProperties {
+  slug: string;
+  name: string;
+  plant_name: string | null;
+  subsystem: string | null;
+  basin: string | null;
+  river: string | null;
+  useful_volume_hm3: number | null;
+  storage_pct: number | null;
+  ena_storable_pct_mlt: number | null;
+  day: string | null;
+}
+
+export interface ReservoirFeature {
+  type: "Feature";
+  geometry: GeoPoint;
+  properties: ReservoirProperties;
+}
+
+export interface ReservoirCollection {
+  type: "FeatureCollection";
+  meta: GeoMeta;
+  features: ReservoirFeature[];
+}
+
 export interface PlantListResponse {
   items: PlantSummary[];
   total: number;

@@ -11,6 +11,12 @@ export const MAP_LAYERS = [
     /** Needs an account, like /estados (same data). */
     account: true,
   },
+  {
+    key: "reservatorios",
+    href: "/mapas/reservatorios",
+    label: "Reservatórios",
+    account: false,
+  },
 ] as const;
 
 export type MapLayerKey = (typeof MAP_LAYERS)[number]["key"];
@@ -133,4 +139,23 @@ export function stepMonth(months: string[], month: string | null, delta: 1 | -1)
   const at = month === null ? -1 : ascending.indexOf(month);
   if (at === -1) return null;
   return ascending[at + delta] ?? null;
+}
+
+/** Brazil's bounding box [west, south, east, north], for "Voltar ao Brasil". */
+export const BRAZIL_BOUNDS: [number, number, number, number] = [-74, -34, -28.8, 5.3];
+
+/** Storage (EAR) classes of the reservoirs map: upper limits in %, five colors. */
+export const STORAGE_LIMITS = [20, 40, 60, 80];
+
+export function storageClass(pct: number | null): number | null {
+  if (pct === null || !Number.isFinite(pct)) return null;
+  const index = STORAGE_LIMITS.findIndex((limit) => pct < limit);
+  return index === -1 ? STORAGE_LIMITS.length : index;
+}
+
+export function storageClassLabel(index: number): string {
+  if (index === 0) return `menos de ${STORAGE_LIMITS[0]}%`;
+  const last = STORAGE_LIMITS.length;
+  if (index === last) return `${STORAGE_LIMITS[last - 1]}% ou mais`;
+  return `${STORAGE_LIMITS[index - 1]}% a menos de ${STORAGE_LIMITS[index]}%`;
 }

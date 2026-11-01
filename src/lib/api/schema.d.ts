@@ -591,6 +591,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/geo/reservoirs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["geo_reservoirs_v1_geo_reservoirs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/market/pld": {
         parameters: {
             query?: never;
@@ -1335,6 +1351,23 @@ export interface components {
             step: string;
             count: number;
         };
+        GeoMeta: {
+            source_name: string;
+            source_url: string;
+            license: string;
+            as_of: string | null;
+            updated_at: string | null;
+            warnings: string[];
+            total: number;
+            omitted: number;
+        };
+        GeoPoint: {
+            type: "Point";
+            coordinates: [
+                number,
+                number
+            ];
+        };
         GeoStateCurtailment: {
             state: string;
             curtailment_pct: number | null;
@@ -1842,6 +1875,11 @@ export interface components {
             summary: string | null;
             published_at: string | null;
         };
+        ReservoirCollection: {
+            type: "FeatureCollection";
+            meta: components["schemas"]["GeoMeta"];
+            features: components["schemas"]["ReservoirFeature"][];
+        };
         ReservoirDailyPoint: {
             day: string;
             storage_mw_month: number | null;
@@ -1866,6 +1904,11 @@ export interface components {
             reservoir: components["schemas"]["ReservoirInfo"];
             points: components["schemas"]["ReservoirDailyPoint"][];
         };
+        ReservoirFeature: {
+            type: "Feature";
+            geometry: components["schemas"]["GeoPoint"];
+            properties: components["schemas"]["ReservoirProperties"];
+        };
         ReservoirInfo: {
             id: string;
             name: string;
@@ -1887,6 +1930,18 @@ export interface components {
         ReservoirListResponse: {
             latest_day: string | null;
             items: components["schemas"]["ReservoirSummary"][];
+        };
+        ReservoirProperties: {
+            slug: string;
+            name: string;
+            plant_name: string | null;
+            subsystem: string | null;
+            basin: string | null;
+            river: string | null;
+            useful_volume_hm3: number | null;
+            storage_pct: number | null;
+            ena_storable_pct_mlt: number | null;
+            day: string | null;
         };
         ReservoirSummary: {
             id: string;
@@ -3267,6 +3322,36 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GeoStatesResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    geo_reservoirs_v1_geo_reservoirs_get: {
+        parameters: {
+            query?: {
+                date?: string | null;
+                subsystem?: ("N" | "NE" | "S" | "SE") | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReservoirCollection"];
                 };
             };
             422: {
