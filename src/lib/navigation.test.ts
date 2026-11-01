@@ -136,7 +136,7 @@ describe("menu structure", () => {
     const pages = Object.fromEntries(NAV.map((i) => [i.label, i.children?.map((c) => c.href)]));
     expect(pages).toEqual({
       Painel: ["/painel", "/mapas", "/sistema", "/agua"],
-      Mercado: ["/mercado/pld", "/mercado/livre", "/tarifas", "/qualidade"],
+      Mercado: ["/mercado/pld", "/mercado/livre", "/tarifas", "/qualidade", "/bandeira"],
       Curtailment: ["/curtailment", "/estados", "/usinas", "/analises", "/relatorios"],
       Notícias: ["/noticias", "/noticias/atos", "/noticias/assinar"],
       Previsões: ["/previsoes", "/previsao"],

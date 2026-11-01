@@ -38,3 +38,15 @@ describe("forecast list", () => {
     expect(isProtected("/previsao")).toBe(true);
   });
 });
+
+describe("forecast under evaluation", () => {
+  it("keeps the flag forecast open but outside the forecasts menu until a lead is published", () => {
+    const flag = FORECASTS.find((f) => f.key === "bandeira");
+    expect(flag?.status).toBe("evaluating");
+    expect(isProtected("/bandeira")).toBe(false);
+    const forecastsMenu = NAV.find((item) => item.label === "Previsões");
+    expect(forecastsMenu?.children?.map((c) => c.href)).not.toContain("/bandeira");
+    const market = NAV.find((item) => item.label === "Mercado");
+    expect(market?.children?.map((c) => c.href)).toContain("/bandeira");
+  });
+});

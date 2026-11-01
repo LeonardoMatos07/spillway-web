@@ -1,6 +1,7 @@
 import { FORECAST_MODEL_NAME } from "@/lib/forecast";
 
-export type ForecastStatus = "available" | "soon";
+/** "evaluating": the page is open (calculator, history, scoreboard) but no lead passed the test yet. */
+export type ForecastStatus = "available" | "evaluating" | "soon";
 
 export interface ForecastEntry {
   /** Stable key; also how the hub finds the model metadata of a forecast. */
@@ -40,8 +41,8 @@ export const FORECASTS: readonly ForecastEntry[] = [
     href: "/bandeira",
     title: "Bandeira tarifária",
     predicts: "Qual bandeira (verde, amarela ou vermelha) deve valer nos próximos meses.",
-    horizon: "Próximos meses",
-    status: "soon",
+    horizon: "Próximo mês, com 21, 14, 7 e 3 dias de antecedência",
+    status: "evaluating",
     members: false,
   },
   {

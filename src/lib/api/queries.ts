@@ -42,6 +42,10 @@ import type {
   Subsystem,
   SubsystemCurtailmentResponse,
   TariffFlagsResponse,
+  FlagForecastResponse,
+  FlagMonthsResponse,
+  FlagRuleResponse,
+  FlagScoreboardResponse,
 } from "./types";
 
 export function getSubsystemCurtailment(
@@ -340,4 +344,22 @@ export function getPlantGeneration(slug: string) {
     `/v1/plants/${encodeURIComponent(slug)}/generation`,
     SYSTEM_OPTIONS,
   );
+}
+
+const FLAG_OPTIONS = { tags: ["flag" as const], revalidate: MARKET_REVALIDATE_SECONDS };
+
+export function getFlagRule() {
+  return apiTry<FlagRuleResponse>("/v1/flag/rule", FLAG_OPTIONS);
+}
+
+export function getFlagMonths(from?: string) {
+  return apiTry<FlagMonthsResponse>(withQuery("/v1/flag/months", { from }), FLAG_OPTIONS);
+}
+
+export function getFlagForecast() {
+  return apiTry<FlagForecastResponse>("/v1/flag/forecast", FLAG_OPTIONS);
+}
+
+export function getFlagScoreboard() {
+  return apiTry<FlagScoreboardResponse>("/v1/flag/scoreboard", FLAG_OPTIONS);
 }

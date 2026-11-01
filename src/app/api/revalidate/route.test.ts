@@ -60,6 +60,7 @@ describe("POST /api/revalidate", () => {
       "news",
       "market",
       "reliability",
+      "flag",
     ]);
   });
 

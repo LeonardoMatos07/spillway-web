@@ -2068,10 +2068,10 @@ export interface components {
             ena_storable_pct_mlt: number | null;
         };
         RevalidateInput: {
-            tags?: ("curtailment" | "plants" | "reports" | "forecast" | "news" | "market" | "reliability")[];
+            tags?: ("curtailment" | "plants" | "reports" | "forecast" | "news" | "market" | "reliability" | "flag")[];
         };
         RevalidateResponse: {
-            tags: ("curtailment" | "plants" | "reports" | "forecast" | "news" | "market" | "reliability")[];
+            tags: ("curtailment" | "plants" | "reports" | "forecast" | "news" | "market" | "reliability" | "flag")[];
             cache_cleared: boolean;
             entries_removed: number;
             web_revalidated: boolean;
