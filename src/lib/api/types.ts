@@ -382,6 +382,7 @@ export const CACHE_TAGS = [
   "news",
   "market",
   "reliability",
+  "flag",
 ] as const;
 export type CacheTag = (typeof CACHE_TAGS)[number];
 
@@ -908,4 +909,123 @@ export interface PlantGenerationPoint {
 export interface PlantGenerationResponse {
   plant: PowerPlantInfo;
   points: PlantGenerationPoint[];
+}
+
+export type FlagName = "Verde" | "Amarela" | "Vermelha P1" | "Vermelha P2";
+
+export interface FlagAttribution {
+  text: string;
+  sources: string[];
+  legal_note: string;
+}
+
+export interface FlagRuleVersion {
+  name: string;
+  lim_green: number;
+  lim_yellow: number;
+  lim_red1: number;
+  gfom: boolean;
+  effective_from: string | null;
+  status: string;
+}
+
+export interface FlagGfomTable {
+  original: FlagName;
+  steps: { up_to_mwm: number; flag: FlagName }[];
+}
+
+export interface FlagRuleResponse {
+  formula: string;
+  versions: FlagRuleVersion[];
+  gfom: FlagGfomTable[];
+  latest_month: string | null;
+  latest_rule_version: string | null;
+  pld_min_brl_per_mwh: number | null;
+  pld_max_brl_per_mwh: number | null;
+  gsf: number | null;
+  pld_trigger_brl_per_mwh: number | null;
+  flag: string | null;
+  green_upper_brl_per_mwh: number | null;
+  yellow_upper_brl_per_mwh: number | null;
+  red1_upper_brl_per_mwh: number | null;
+  attribution: FlagAttribution;
+}
+
+export interface FlagMonth {
+  month: string;
+  rule_version: string;
+  pld_min_brl_per_mwh: number;
+  pld_max_brl_per_mwh: number;
+  gh_mwmed: number;
+  gf_mwmed: number;
+  gsf: number;
+  pld_trigger_brl_per_mwh: number;
+  gfom_mwmed: number;
+  green_upper_brl_per_mwh: number;
+  yellow_upper_brl_per_mwh: number;
+  red1_upper_brl_per_mwh: number;
+  flag: string;
+  bulletin_number: number | null;
+  bulletin_url: string | null;
+  bulletin_published_on: string | null;
+  revised_on: string | null;
+}
+
+export interface FlagMonthsResponse {
+  items: FlagMonth[];
+  attribution: FlagAttribution;
+}
+
+export interface FlagProbability {
+  flag: FlagName;
+  prob: number;
+  band_lower_brl_per_mwh: number;
+  band_upper_brl_per_mwh: number;
+}
+
+export interface FlagForecastRun {
+  lead_days: number;
+  generated_at: string;
+  data_through: string;
+  model_version: string;
+  rule_version: string;
+  trigger_p10_brl_per_mwh: number | null;
+  trigger_p50_brl_per_mwh: number | null;
+  trigger_p90_brl_per_mwh: number | null;
+  probabilities: FlagProbability[];
+}
+
+export interface FlagForecastResponse {
+  published: boolean;
+  target_month: string | null;
+  official_flag: string | null;
+  latest_official_month: string | null;
+  latest_official_flag: string | null;
+  runs: FlagForecastRun[];
+  notice: string;
+  disclaimer: string;
+  attribution: FlagAttribution;
+}
+
+export interface FlagScoreItem {
+  target_month: string;
+  lead_days: number;
+  generated_at: string;
+  actual_flag: FlagName;
+  prob_actual: number;
+  brier: number;
+  top_hit: boolean;
+}
+
+export interface FlagScoreSummary {
+  lead_days: number;
+  n: number;
+  mean_brier: number;
+  hit_rate: number;
+}
+
+export interface FlagScoreboardResponse {
+  items: FlagScoreItem[];
+  summary: FlagScoreSummary[];
+  notice: string;
 }

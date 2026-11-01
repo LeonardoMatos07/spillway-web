@@ -50,12 +50,17 @@ export const NAV: readonly NavItem[] = [
   {
     href: "/mercado/pld",
     label: "Mercado",
-    matches: ["/mercado", "/qualidade", "/tarifas"],
+    matches: ["/mercado", "/qualidade", "/tarifas", "/bandeira"],
     children: [
       { href: "/mercado/pld", label: "PLD", description: "Preço da energia no curto prazo." },
       { href: "/mercado/livre", label: "Mercado livre", description: "Consumo e migração." },
       { href: "/tarifas", label: "Tarifas", description: "Bandeiras tarifárias." },
       { href: "/qualidade", label: "Qualidade", description: "DEC e FEC das distribuidoras." },
+      {
+        href: "/bandeira",
+        label: "Bandeira",
+        description: "Calculadora, histórico e previsão da bandeira.",
+      },
     ],
   },
   {
@@ -91,8 +96,8 @@ export const NAV: readonly NavItem[] = [
   {
     href: "/previsoes",
     label: "Previsões",
-    // Addresses of every forecast, including the ones not published yet.
-    matches: ["/previsoes", "/previsao", "/bandeira"],
+    // Addresses of the forecasts that live under this group (/bandeira is under Mercado).
+    matches: ["/previsoes", "/previsao"],
     children: [
       {
         href: "/previsoes",

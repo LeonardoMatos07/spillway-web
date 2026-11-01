@@ -69,12 +69,13 @@ export default async function ForecastsPage() {
       <PageHeader eyebrow="Previsões" title="Todas as previsões do setor num só lugar">
         <p>
           Cada previsão mostra o que prevê, até quando, e qual modelo está por trás. As que ainda
-          não estão no ar aparecem como em breve.
+          estão sendo testadas aparecem como em avaliação e as que não estão no ar, como em breve.
         </p>
       </PageHeader>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {FORECASTS.map((forecast) => {
           const available = forecast.status === "available";
+          const open = available || forecast.status === "evaluating";
           const body = (
             <>
               <span className="flex items-center justify-between gap-2">
@@ -86,7 +87,7 @@ export default async function ForecastsPage() {
                     available ? "bg-accent-soft text-accent-strong" : "bg-surface-2 text-ink-2"
                   }`}
                 >
-                  {available ? "Disponível" : "Em breve"}
+                  {available ? "Disponível" : open ? "Em avaliação" : "Em breve"}
                 </span>
               </span>
               <span className="text-ink-2 mt-2 block text-sm leading-6">{forecast.predicts}</span>
@@ -103,7 +104,7 @@ export default async function ForecastsPage() {
             "border-grid bg-surface shadow-card flex h-full flex-col rounded-2xl border p-5";
           return (
             <li key={forecast.key}>
-              {available ? (
+              {open ? (
                 <Link
                   href={forecast.href}
                   className={`${className} hover:border-accent focus-visible:outline-accent group transition-colors focus-visible:outline-2 focus-visible:outline-offset-2`}
