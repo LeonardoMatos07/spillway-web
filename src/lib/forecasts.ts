@@ -50,8 +50,8 @@ export const FORECASTS: readonly ForecastEntry[] = [
     href: "/agua/previsao",
     title: "Afluência (ENA)",
     predicts: "Quanta água deve chegar aos reservatórios de cada subsistema.",
-    horizon: "Próximas semanas",
-    status: "soon",
+    horizon: "Até 14 dias",
+    status: "evaluating",
     members: false,
   },
 ];
