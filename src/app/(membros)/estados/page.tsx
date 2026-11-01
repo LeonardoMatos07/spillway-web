@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ExploreTabs } from "@/components/explore-tabs";
+import { StatesMapPanel } from "@/components/maps/states-map-panel";
 import { Container, PageHeader, Section } from "@/components/ui";
+import { getGeoStatesCurtailment } from "@/lib/api/queries";
 import { STATES, REGIONS } from "@/lib/geo";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -11,7 +13,8 @@ export const metadata = pageMetadata({
   path: "/estados",
 });
 
-export default function StatesPage() {
+export default async function StatesPage() {
+  const map = await getGeoStatesCurtailment();
   return (
     <Container>
       <ExploreTabs active="estados" />
@@ -21,6 +24,15 @@ export default function StatesPage() {
           o país. Estados sem usinas eólicas ou solares despachadas pelo ONS aparecem sem dados.
         </p>
       </PageHeader>
+      {map.ok ? (
+        <Section
+          id="mapa"
+          title="No mapa"
+          description="O corte de eólica e solar em cada estado no último mês com dados. Clique em um estado para abrir a página dele."
+        >
+          <StatesMapPanel initial={map.data} initialMetric="pct" compact />
+        </Section>
+      ) : null}
       {REGIONS.map((region) => (
         <Section key={region} title={region}>
           <ul className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
