@@ -40,13 +40,13 @@ export function AuthNav() {
   }
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <Link href="/entrar" className="text-ink-2 hover:text-ink px-2 py-1.5 font-medium">
+    <div className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm">
+      <Link href="/entrar" className="text-ink-2 hover:text-ink px-1.5 py-1.5 font-medium sm:px-2">
         Entrar
       </Link>
       <Link
         href="/cadastro"
-        className="bg-accent text-on-accent rounded-full px-3.5 py-1.5 font-semibold hover:opacity-90"
+        className="bg-accent text-on-accent rounded-full px-3 py-1.5 font-semibold whitespace-nowrap hover:opacity-90 sm:px-3.5"
       >
         Criar conta
       </Link>

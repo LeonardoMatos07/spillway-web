@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { isNavActive, NAV, type NavItem } from "@/lib/navigation";
 
@@ -41,6 +41,13 @@ function DesktopItem({
   onToggle: () => void;
   onClose: () => void;
 }) {
+  const wrapper = useRef<HTMLDivElement>(null);
+  // Open towards the left when the panel (w-72 = 288 px) would run past the right edge.
+  const [alignRight, setAlignRight] = useState(false);
+  useLayoutEffect(() => {
+    if (!open || !wrapper.current) return;
+    setAlignRight(wrapper.current.getBoundingClientRect().left + 288 > window.innerWidth - 16);
+  }, [open]);
   const children = item.children;
   if (!children) {
     return (
@@ -55,7 +62,7 @@ function DesktopItem({
   }
   const menuId = `menu-${item.label.toLowerCase()}`;
   return (
-    <div className="relative">
+    <div className="relative" ref={wrapper}>
       <button
         type="button"
         aria-expanded={open}
@@ -70,7 +77,7 @@ function DesktopItem({
       {open ? (
         <ul
           id={menuId}
-          className="border-grid bg-surface shadow-card absolute top-full left-0 z-40 mt-2 w-64 rounded-2xl border p-2"
+          className={`border-grid bg-surface shadow-card absolute top-full ${alignRight ? "right-0" : "left-0"} z-40 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-2xl border p-2 whitespace-normal`}
         >
           {children.map((child) => (
             <li key={child.href}>
@@ -164,7 +171,7 @@ export function MobileMenu() {
         aria-expanded={open}
         aria-controls="menu-mobile"
         onClick={() => setOpen(!open)}
-        className="border-line text-ink-2 hover:bg-surface-2 inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold"
+        className="border-line text-ink-2 hover:bg-surface-2 inline-flex h-11 w-11 items-center justify-center gap-1.5 rounded-full border px-0 text-sm font-semibold sm:w-auto sm:gap-2 sm:px-4"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4">
           <path
@@ -175,7 +182,7 @@ export function MobileMenu() {
             strokeLinecap="round"
           />
         </svg>
-        Menu
+        <span className="sr-only sm:not-sr-only">Menu</span>
       </button>
       {open ? (
         <nav

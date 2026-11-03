@@ -33,10 +33,10 @@ export function SiteHeader() {
       >
         Pular para o conteúdo
       </a>
-      <Container className="flex items-center gap-x-6 py-3">
+      <Container className="flex items-center gap-x-3 py-3 md:gap-x-6">
         <Link
           href="/"
-          className="text-ink font-display flex items-center gap-2.5 text-lg font-bold tracking-tight"
+          className="text-ink font-display flex items-center gap-2 text-base font-bold tracking-tight sm:gap-2.5 sm:text-lg"
         >
           <BrandMark />
           <span>{SITE_NAME}</span>
@@ -44,7 +44,7 @@ export function SiteHeader() {
         <div className="flex-1">
           <NavLinks />
         </div>
-        <div className="ml-auto flex items-center gap-3 md:ml-0">
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-3 md:ml-0">
           <AuthNav />
           <ThemeToggle />
           <MobileMenu />
