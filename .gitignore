@@ -17,3 +17,6 @@ coverage/
 Thumbs.db
 *.log
 .vercel
+
+# copied from maplibre-gl by scripts/copy-maplibre-worker.mjs
+public/maplibre/

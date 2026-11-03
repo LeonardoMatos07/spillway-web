@@ -8,6 +8,7 @@ import {
   type GeoJSONSource,
   type MapLayerMouseEvent,
   type MapMouseEvent,
+  setWorkerUrl,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { FeatureCollection, Geometry, LineString, Point } from "geojson";
@@ -15,6 +16,8 @@ import { useEffect, useRef, useState } from "react";
 import { feature } from "topojson-client";
 import type { GeometryCollection, Topology } from "topojson-specification";
 import { BRAZIL_BOUNDS } from "@/lib/maps";
+
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const STATES_URL = "/geo/brazil-states.2025.topo.json";
 
