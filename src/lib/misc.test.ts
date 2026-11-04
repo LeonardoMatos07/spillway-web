@@ -149,11 +149,11 @@ describe("visitorIpHeaders", () => {
 describe("safeNextPath", () => {
   it("keeps internal paths and rejects anything that could leave the site", () => {
     expect(safeNextPath("/comparar?itens=e%3ABA")).toBe("/comparar?itens=e%3ABA");
-    expect(safeNextPath("https://evil.example")).toBe("/painel");
-    expect(safeNextPath("//evil.example")).toBe("/painel");
-    expect(safeNextPath("/" + String.fromCharCode(92) + "evil.example")).toBe("/painel");
-    expect(safeNextPath(undefined)).toBe("/painel");
-    expect(safeNextPath("relative")).toBe("/painel");
+    expect(safeNextPath("https://evil.example")).toBe("/");
+    expect(safeNextPath("//evil.example")).toBe("/");
+    expect(safeNextPath("/" + String.fromCharCode(92) + "evil.example")).toBe("/");
+    expect(safeNextPath(undefined)).toBe("/");
+    expect(safeNextPath("relative")).toBe("/");
     expect(safeNextPath("nope", "/conta")).toBe("/conta");
   });
 });
