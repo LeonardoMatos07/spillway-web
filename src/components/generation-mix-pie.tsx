@@ -53,10 +53,12 @@ export function GenerationMixPie({ points }: { points: GenerationMixPoint[] }) {
     .map((arc) => `${SOURCE_LABELS[arc.source]} ${formatPercent(arc.share * 100)}`)
     .join(", ");
 
+  // Sized by the width of its own box (container queries): the same component sits in a wide
+  // block on the home page and in a half-width card on the painel.
   return (
-    <div>
-      <div className="grid items-center gap-6 md:grid-cols-[minmax(0,300px)_1fr] md:gap-10">
-        <div className="relative mx-auto w-full max-w-[260px] md:max-w-[300px]">
+    <div className="@container">
+      <div className="grid items-center gap-6 @2xl:grid-cols-[minmax(0,300px)_1fr] @2xl:gap-10">
+        <div className="relative mx-auto w-full max-w-[260px] @2xl:max-w-[300px]">
           <svg
             viewBox="-104 -104 208 208"
             role="img"
@@ -132,7 +134,7 @@ export function GenerationMixPie({ points }: { points: GenerationMixPoint[] }) {
           </div>
         </div>
 
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="grid gap-3 @[18rem]:grid-cols-2">
           {arcs.map((arc) => (
             <li key={arc.source}>
               <div
